@@ -1,3 +1,5 @@
+const { CombinedSelector } = require('./taskSelectors/combinedSelector');
+const { Selector } = require('./taskSelectors/selector');
 /* ************************************************************************************************
  *                                                                                                *
  * Please read the following tutorial before implementing tasks:                                   *
@@ -20,10 +22,16 @@
  *    console.log(r.height);      // => 20
  *    console.log(r.getArea());   // => 200
  */
-function Rectangle(/* width, height */) {
-  throw new Error('Not implemented');
+function Rectangle(width, height) {
+  const rectangle = {
+    width,
+    height,
+    getArea() {
+      return this.width * this.height;
+    },
+  };
+  return rectangle;
 }
-
 
 /**
  * Returns the JSON representation of specified object
@@ -35,10 +43,9 @@ function Rectangle(/* width, height */) {
  *    [1,2,3]   =>  '[1,2,3]'
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
-function getJSON(/* obj */) {
-  throw new Error('Not implemented');
+function getJSON(obj) {
+  return JSON.stringify(obj);
 }
-
 
 /**
  * Returns the object of specified type from JSON representation
@@ -51,10 +58,11 @@ function getJSON(/* obj */) {
  *    const r = fromJSON(Circle.prototype, '{"radius":10}');
  *
  */
-function fromJSON(/* proto, json */) {
-  throw new Error('Not implemented');
+function fromJSON(proto, json) {
+  const prop = JSON.parse(json);
+  const obj = { __proto__: proto, ...prop };
+  return obj;
 }
-
 
 /**
  * Css selectors builder
@@ -111,35 +119,34 @@ function fromJSON(/* proto, json */) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  element(value) {
+    return new Selector({ element: value });
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    return new Selector({ id: value });
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    return new Selector({ class1: value });
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    return new Selector({ attr: value });
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    return new Selector({ pseudoClass: value });
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    return new Selector({ pseudoElement: value });
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator, selector2) {
+    return new CombinedSelector(selector1, combinator, selector2);
   },
 };
-
 
 module.exports = {
   Rectangle,
