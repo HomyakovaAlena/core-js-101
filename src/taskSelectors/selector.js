@@ -2,19 +2,21 @@ class Selector {
   constructor({
     element, class1, id, attr, pseudoClass, pseudoElement,
   }) {
-    this.element1 = element;
-    this.id1 = id;
-    this.class1 = class1 ? [class1] : [];
-    this.attr1 = attr ? [attr] : [];
-    this.pseudoClass1 = pseudoClass ? [pseudoClass] : [];
-    this.pseudoElement1 = pseudoElement;
+    this.elementItem = element;
+    this.idItem = id;
+    this.classItem = class1 ? [class1] : [];
+    this.attrItem = attr ? [attr] : [];
+    this.pseudoClassItem = pseudoClass ? [pseudoClass] : [];
+    this.pseudoElementItem = pseudoElement;
     this.correctOrder = ['element', 'id', 'class', 'attr', 'pseudoClass', 'pseudoElement'];
   }
 
   returnComplexSelector() {
-    return [
-      this.element1, this.id1, this.class1, this.attr1, this.pseudoClass1, this.pseudoElement1,
-    ];
+    const result = [];
+    this.correctOrder.forEach((item) => {
+      result.push(this[`${item}Item`]);
+    });
+    return result;
   }
 
   verifyOrder(indexElement) {
@@ -24,13 +26,13 @@ class Selector {
       if (index > indexElement && item && item.length) {
         flag = true;
       }
-      return true;
+      return flag;
     });
     return flag;
   }
 
   element(value) {
-    if (this.element1) {
+    if (this.elementItem) {
       throw new Error(
         'Element, id and pseudo-element should not occur more then one time inside the selector',
       );
@@ -40,7 +42,7 @@ class Selector {
         'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
       );
     }
-    this.element1 = value;
+    this.elementItem = value;
     return this;
   }
 
@@ -50,12 +52,12 @@ class Selector {
         'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
       );
     }
-    if (this.id1) {
+    if (this.idItem) {
       throw new Error(
         'Element, id and pseudo-element should not occur more then one time inside the selector',
       );
     }
-    this.id1 = value;
+    this.idItem = value;
     return this;
   }
 
@@ -65,10 +67,10 @@ class Selector {
         'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
       );
     }
-    if (this.class1.length) {
-      this.class1.push(value);
+    if (this.classItem.length) {
+      this.classItem.push(value);
     } else {
-      this.class1 = [value];
+      this.classItem = [value];
     }
     return this;
   }
@@ -79,10 +81,10 @@ class Selector {
         'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
       );
     }
-    if (this.attr1.length) {
-      this.attr1.push(value);
+    if (this.attrItem.length) {
+      this.attrItem.push(value);
     } else {
-      this.attr1 = [value];
+      this.attrItem = [value];
     }
     return this;
   }
@@ -93,17 +95,17 @@ class Selector {
         'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
       );
     }
-    if (this.pseudoClass1.length) {
-      this.pseudoClass1.push(value);
+    if (this.pseudoClassItem.length) {
+      this.pseudoClassItem.push(value);
     } else {
-      this.pseudoClass1 = [value];
+      this.pseudoClassItem = [value];
     }
     return this;
   }
 
   pseudoElement(value) {
-    if (!this.pseudoElement1) {
-      this.pseudoElement1 = value;
+    if (!this.pseudoElementItem) {
+      this.pseudoElementItem = value;
       return this;
     }
     throw new Error(
@@ -133,7 +135,7 @@ class Selector {
         result += `::${item}`;
         break;
       default:
-        return null;
+        return '';
     }
     return result;
   }
@@ -150,7 +152,7 @@ class Selector {
           result += Selector.switchitem(index, subitem);
           return false;
         });
-      } else if (!Array.isArray(item) && item.length) {
+      } else {
         result += Selector.switchitem(index, item);
       }
       return false;

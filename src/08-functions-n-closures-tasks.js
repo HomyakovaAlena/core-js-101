@@ -8,7 +8,6 @@
  *                                                                                             *
  ********************************************************************************************* */
 
-
 /**
  * Returns the functions composition of two specified functions f(x) and g(x).
  * The result of compose is to be a function of one argument, (lets call the argument x),
@@ -23,10 +22,8 @@
  *   getComposition(Math.sin, Math.asin)(x) => Math.sin(Math.asin(x))
  *
  */
-function getComposition(/* f, g */) {
-  throw new Error('Not implemented');
-}
 
+const getComposition = (f, g) => (x) => f(g(x));
 
 /**
  * Returns the math power function with the specified exponent
@@ -44,10 +41,13 @@ function getComposition(/* f, g */) {
  *   power05(16) => 4
  *
  */
-function getPowerFunction(/* exponent */) {
-  throw new Error('Not implemented');
-}
 
+function getPowerFunction(exponent) {
+  function inside(y) {
+    return y ** exponent;
+  }
+  return inside;
+}
 
 /**
  * Returns the polynom function of one argument based on specified coefficients.
@@ -62,10 +62,18 @@ function getPowerFunction(/* exponent */) {
  *   getPolynom(8)     => y = 8
  *   getPolynom()      => null
  */
-function getPolynom() {
-  throw new Error('Not implemented');
-}
 
+function getPolynom(...args) {
+  const { length } = [...args];
+  if (!length) return null;
+  return (x) => {
+    let result = 0;
+    [...args].forEach((item, index) => {
+      result += (x ** (length - index - 1)) * item;
+    });
+    return result;
+  };
+}
 
 /**
  * Memoizes passed function and returns function
@@ -81,10 +89,20 @@ function getPolynom() {
  *   ...
  *   memoizer() => the same random number  (next run, returns the previous cached result)
  */
-function memoize(/* func */) {
-  throw new Error('Not implemented');
-}
 
+
+const memoize = (fn) => {
+  const cache = {};
+  return (...args) => {
+    const n = args[0];
+    if (n in cache) {
+      return cache[n];
+    }
+    const result = fn(n);
+    cache[n] = result;
+    return result;
+  };
+};
 
 /**
  * Returns the function trying to call the passed function and if it throws,
@@ -101,10 +119,18 @@ function memoize(/* func */) {
  * }, 2);
  * retryer() => 2
  */
-function retry(/* func, attempts */) {
-  throw new Error('Not implemented');
+function retry(func, attempts) {
+  let count = attempts;
+  while (count) {
+    try {
+      func();
+    } catch (e) {
+      retry(func, count);
+    }
+    count -= 1;
+  }
+  return func;
 }
-
 
 /**
  * Returns the logging wrapper for the specified method,
@@ -129,10 +155,20 @@ function retry(/* func, attempts */) {
  * cos(3.141592653589793) ends
  *
  */
-function logger(/* func, logFunc */) {
-  throw new Error('Not implemented');
-}
 
+function printParameters(args) {
+  const result = args
+    .map((element) => (element instanceof Array ? JSON.stringify(element) : element.toString()));
+  return result;
+}
+function logger(func, logFunc) {
+  return (...args) => {
+    logFunc(`${func.name}(${printParameters(args)}) starts`);
+    const result = func(...args);
+    logFunc(`${func.name}(${printParameters(args)}) ends`);
+    return result;
+  };
+}
 
 /**
  * Return the function with partial applied arguments
@@ -147,10 +183,8 @@ function logger(/* func, logFunc */) {
  *   partialUsingArguments(fn, 'a','b','c')('d') => 'abcd'
  *   partialUsingArguments(fn, 'a','b','c','d')() => 'abcd'
  */
-function partialUsingArguments(/* fn, ...args1 */) {
-  throw new Error('Not implemented');
-}
 
+const partialUsingArguments = (fn, ...args1) => (...args2) => fn(...args1, ...args2);
 
 /**
  * Returns the id generator function that returns next integer starting
@@ -169,10 +203,18 @@ function partialUsingArguments(/* fn, ...args1 */) {
  *   getId4() => 7
  *   getId10() => 11
  */
-function getIdGeneratorFunction(/* startFrom */) {
-  throw new Error('Not implemented');
-}
 
+const getIdGeneratorFunction = (startFrom) => {
+  const cache = {};
+  return () => {
+    if (startFrom in cache) {
+      cache[startFrom] += 1;
+      return cache[startFrom];
+    }
+    cache[startFrom] = startFrom;
+    return startFrom;
+  };
+};
 
 module.exports = {
   getComposition,
