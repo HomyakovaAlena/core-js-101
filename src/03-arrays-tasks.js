@@ -621,7 +621,7 @@ function swapHeadAndTail(arr) {
   const halfStart = Math.floor(arr.length / 2);
   const halfEnd = Math.ceil(arr.length / 2);
   return arr.length % 2 === 0 ? [...arr.slice(halfEnd), ...arr.slice(0, halfStart)]
-    : [...arr.slice(halfEnd), arr.at(halfStart), ...arr.slice(0, halfStart)];
+    : [...arr.slice(halfEnd), arr[halfStart], ...arr.slice(0, halfStart)];
 }
 
 module.exports = {

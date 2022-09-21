@@ -206,8 +206,8 @@ function isInsideCircle(circle, point) {
  */
 function findFirstSingleChar(str) {
   for (let i = 0; i < str.length; i += 1) {
-    if (!str.replace(str.at(i)).includes(str.at(i))) {
-      return str.at(i);
+    if (!str.replace(str[i]).includes(str[i])) {
+      return str[i];
     }
   }
   return null;
@@ -296,17 +296,17 @@ function reverseInteger(num) {
  *   4916123456789012 => false
  */
 function isCreditCardNumber(ccn) {
-  const checkDigit = Number(String(ccn).at(-1));
+  const checkDigit = Number(String(ccn)[String(ccn).length - 1]);
   const payloadArr = String(ccn).split('').map(Number).reverse()
     .slice(1);
   let summ = 0;
   for (let i = 0; i < payloadArr.length; i += 1) {
     if (i % 2 === 0) {
-      const first = Math.trunc((payloadArr.at(i) * 2) / 10);
-      const second = (payloadArr.at(i) * 2) % 10;
+      const first = Math.trunc((payloadArr[i] * 2) / 10);
+      const second = (payloadArr[i] * 2) % 10;
       summ += first + second;
     } else {
-      summ += payloadArr.at(i);
+      summ += payloadArr[i];
     }
   }
   return ((10 - (summ % 10)) % 10) - checkDigit === 0;
